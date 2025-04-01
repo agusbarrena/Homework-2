@@ -2,6 +2,8 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <string>
+
 Estudiante::Estudiante(const std::string& nombre, int legajo) : legajo(legajo), nombre(nombre) {}
 
 std::string Estudiante::getNombre() const{
@@ -42,6 +44,9 @@ std::ostream& operator<<(std::ostream& os, const Estudiante& estudiante){
 
 Curso::Curso(const std::string nombre): nombre(nombre){}
 
+std::string Curso::getNombreCurso() const{
+    return nombre;
+}
 bool Curso::inscribirEstudiante(Estudiante* estudiante){
     if (cursoCompleto() || estudianteInscripto(estudiante->getLegajo())){
         return false;
@@ -97,147 +102,158 @@ Curso::Curso(const Curso& rht) : nombre(rht.nombre){
         estudiantes.push_back(new Estudiante (*estudiante));
     }
 }
-
-Curso::~Curso(){ //si yo elimino el curso, al hacer una deep copy debo eliminar los estudiantes 
+//Realicé una deep copy y no una shallow copy porque en mi implementación, Curso tiene un vector que contiene punteros a estudiantes. Por lo tanto, si yo hiciera una shallow copy haciendo que tanto mi curso como la copia apunten al mismo vector, si llego a eliminar un estudiante en la copia, lo estaría también eliminando en el curso original. Esto se llama problemas de aliasing. Para que no ocurra esto, necesitamos con una deep copy asegurar que ambos cursos sean independientes creando nuevos objetos Estudiante en la copia del curso.
+Curso::~Curso(){ //si yo elimino el curso, al hacer una deep copy debo eliminar el vector de estudiantes al que estaba asociado, sino me quedaria memoria colgada 
     for(auto* estudiante : estudiantes){
         delete estudiante;
     }
 }
-//Respuesta (c): El tipo de relación entre los objetos curso y estudiante es de agregación.Esto se debe a que vemos representada una relacion del tipo has-a entre un objeto que actúa como un todo (whole) y sus partes (parts). Como podemos ver en este caso, Curso almacena punteros a Estudiante, y estos pueden existir en múltiples cursos o fuera de ellos. Por lo tanto, exitse una acción entre ambos objetos pero tienen ciclos de vida independientes el uno del otro.
+//Respuesta (c): El tipo de relación entre los objetos curso y estudiante es de agregación.Esto se debe a que vemos representada una relacion del tipo has-a entre un objeto que actúa como un todo (whole) y sus partes (parts). Como podemos ver en este caso, Curso almacena punteros a Estudiante, y estos pueden existir en múltiples cursos o fuera de ellos. Por lo tanto, existe una acción entre ambos objetos pero tienen ciclos de vida independientes el uno del otro.
 
-void menu_interactivo(){
+void menu_interactivo() {
+    
     std::vector<Estudiante*> estudiantes;
+    std::vector<Curso*> cursos = {
+        new Curso("Paradigmas"),
+        new Curso("Fisica"),
+        new Curso("Estadistica"),
+        new Curso("Literatura")
+    };
+
     int opcion;
     int legajo;
     float nota;
-    std::string nombre;
     std::string nombreCurso;
+    std::string curso;
+    std::string cursoNombre;
+    do {
+        std::cout << "\n---Menu---\n"
+                  << "1. Agregar estudiante\n"
+                  << "2. Inscribir estudiante a un curso\n"
+                  << "3. Ingresar notas de un estudiante\n"
+                  << "4. Desinscribir estudiante de un curso\n"
+                  << "5. Buscar estudiante por legajo\n"
+                  << "6. Verificar si un curso está completo\n"
+                  << "7. Imprimir lista de estudiantes ordenados\n"
+                  << "8. Mostrar promedio general\n"
+                  << "9. Copiar curso\n"
+                  << "10. Salir\n"
+                  << "Opción: ";
+        std::cin >> opcion;
 
-    do{
-        std::cout << "\n---Menu---\n";
-        std::cout << "1. Agregar estudiante\n";
-        std::cout << "2. Inscribir estudiante en un curso\n";
-        std::cout << "3. Agregar nota del estudiante\n";
-        std::cout << "4. Desinscribir estudiante de un curso\n";
-        std::cout << "5. Buscar estudiante inscripto por su legajo\n";
-        std::cout << "6. Verificar si el curso esta completo\n";
-        std::cout << "7. Imprimir lista de estudiantes ordenados alfabeticamente\n";
-        std::cout << "8. Copiar un curso\n";
-        std::cout << "9. Salir\n";
-        std::cout << "Seleccione una opcion: ";
-
-        std::cin>> opcion;
-
-        switch(opcion){
-            case 1: {  
-                std::cout << "Ingrese el nombre del estudiante: ";
-                std::cin.ignore();
-                std::getline(std::cin, nombre);
-                std::cout << "Ingrese el legajo: ";
+        switch (opcion) {
+            case 1: {
+                std::string nombre;
+                std::cout << "Ingrese nombre: ";
+                std::cin >> nombre;
+                std::cout << "Ingrese legajo: ";
                 std::cin >> legajo;
                 estudiantes.push_back(new Estudiante(nombre, legajo));
-                std::cout << "El estudiante fue agregado.\n";
                 break;
             }
-
-            case 2: {  
-                std::cout << "Ingrese el legajo del estudiante a inscribir: ";
-                std::cin >> legajo;
-                bool encontrado = false;
-
-                for (Estudiante* alumno : estudiantes) {
-                    if (alumno->getLegajo() == legajo) {
-                        if (curso.inscribirEstudiante(alumno)) {
-                            std::cout << "El estudiante fue inscrito con éxito.\n";
-                        } else {
-                            std::cout << "No se pudo inscribir (curso lleno o ya inscrito).\n";
-                        }
-                        encontrado = true;
-                        break;
-                    }
-                }
-
-                if (!encontrado) std::cout << "El estudiante no fue encontrado.\n";
-                break;
-            }
-
-            case 3: {
+            case 2: {
                 std::cout << "Ingrese legajo del estudiante: ";
                 std::cin >> legajo;
-
-                for (auto& est : estudiantes) {
-                    if (est->getLegajo() == legajo) {
-                        std::cout << "Ingrese nombre del curso de la respectiva nota: ";
-                        std::cin.ignore();
-                        std::getline(std::cin, nombreCurso);
-                        std::cout << "Ingrese la nota: ";
-                        std::cin >> nota;
-                        est->agregarCurso(nombreCurso, nota);
-                        std::cout << "Nota agregada correctamente.\n";
+                for (auto& curso : cursos) {
+                    std::cout << curso->getNombreCurso() << "\n";
+                }
+                std::cout << "Ingrese nombre del curso. Las opciones son las que aparecen arriba: ";
+                std::cin >> nombreCurso;
+                
+                for (auto& curso : cursos) {
+                    if (curso->getNombreCurso() == nombreCurso) {
+                        for (auto& estudiante : estudiantes) {
+                            if (estudiante->getLegajo() == legajo) {
+                                curso->inscribirEstudiante(estudiante);
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            case 3: {
+                std::cout << "Ingrese legajo: ";
+                std::cin >> legajo;
+                std::cout << "Ingrese curso: ";
+                std::cin >> curso;
+                std::cout << "Ingrese nota: ";
+                std::cin >> nota;
+                for (auto& estudiante : estudiantes) {
+                    if (estudiante->getLegajo() == legajo) {
+                        estudiante->agregarCurso(curso, nota);
                         break;
                     }
                 }
                 break;
             }
-
-            case 4: {  
-                std::cout << "Ingrese el legajo del estudiante a desinscribir: ";
+            case 4: {
+                std::cout << "Ingrese legajo del estudiante a desinscribir: ";
                 std::cin >> legajo;
-
-                if (curso.desinscribirEstudiante(legajo)) {
-                    std::cout << "El estudiante fue desinscrito con éxito.\n";
-                } else {
-                    std::cout << "No se encontró al estudiante en el curso.\n";
+                for (auto& curso : cursos) {
+                    curso->desinscribirEstudiante(legajo);
                 }
                 break;
             }
-
-            case 5: {  
-                std::cout << "Ingrese el legajo del estudiante: ";
+            case 5: {
+                std::cout << "Ingrese legajo: ";
                 std::cin >> legajo;
-
-                if (curso.estudianteInscripto(legajo)) {
-                    std::cout << "El estudiante con legajo " << legajo << " está inscrito en el curso.\n";
-                } else {
-                    std::cout << "El estudiante no está inscrito en el curso.\n";
+                for (auto& estudiante : estudiantes) {
+                    if (estudiante->getLegajo() == legajo) {
+                        estudiante->imprimirEstudiante();
+                        break;
+                    }
                 }
                 break;
             }
-
-            case 6: {  
-                if (curso.cursoCompleto()) {
-                    std::cout << "El curso está completo.\n";
-                } else {
-                    std::cout << "Todavía hay cupos disponibles.\n";
+            case 6: {
+                for (auto& curso : cursos) {
+                    std::cout << curso->getNombreCurso() << " esta " 
+                              << (curso->cursoCompleto() ? "lleno" : "hay vacantes") << "\n";
                 }
                 break;
             }
-
-            case 7: {  
-                std::cout << curso << "\n";  // Usa la sobrecarga del operador <<
+            case 7: {
+                for (auto& curso : cursos) {
+                    curso->estudiantesOrdenados();
+                }
                 break;
             }
-
-            case 8: {  
-                Curso cursoCopia = curso;  // Llamamos al constructor de copia
-                std::cout << "Se creó una copia del curso. Mostrando lista de estudiantes:\n";
-                std::cout << cursoCopia << "\n";
+            case 8: {
+                for (auto& estudiante : estudiantes) {
+                    std::cout << estudiante->getNombre() << " - Promedio: " 
+                              << estudiante->getPromedioGeneral() << "\n";
+                }
                 break;
             }
-
-            case 9:
+            case 9: {
+                std::cout << "Ingrese curso a copiar: ";
+                std::cin >> cursoNombre;
+                for (auto& curso : cursos) {
+                    if (curso->getNombreCurso() == cursoNombre) {
+                        cursos.push_back(new Curso(*curso));
+                        std::cout << "Curso copiado.\n";
+                        break;
+                    }
+                }
+                break;
+            }
+            case 10:
                 std::cout << "Saliendo del programa.\n";
                 break;
-
             default:
-                std::cout << "Opción no válida. Por favor, ntente nuevamente.\n";
+                std::cout << "Opción invalida.\n";
+                break;
         }
-    } while (opcion != 9);
+    } while (opcion != 10);
 
-    for (Estudiante* alumno : estudiantes) { //se libera la memoria de los alumnos creados 
-        delete alumno;
+    for (auto& estudiante : estudiantes) {
+        delete estudiante;
     }
-
+    for (auto& curso : cursos) {
+        delete curso;
+    }
 }
+
 
 

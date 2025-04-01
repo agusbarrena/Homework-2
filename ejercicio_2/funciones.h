@@ -5,7 +5,7 @@ class Estudiante{
 private:
     int legajo;
     std::string nombre;
-    std::vector<std::pair<std::string, float>> cursos; // usar objeto curso 
+    std::vector<std::pair<std::string, float>> cursos; 
 
 public:
     Estudiante(const std::string& nombre, int legajo);
@@ -28,7 +28,7 @@ private:
 
 public:
     Curso(const std::string nombre);
-
+    std::string getNombreCurso() const;
     bool inscribirEstudiante(Estudiante* estudiante);
     bool desinscribirEstudiante(int legajo);
     bool estudianteInscripto(int legajo);
