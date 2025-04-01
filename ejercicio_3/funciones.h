@@ -1,11 +1,12 @@
 #include <iostream>
+#include <memory>
 
-class Numero{ //interfaz
+class Numero{ //interfaz 
 public:
-    virtual Numero* suma(Numero* num) = 0;
-    virtual Numero* resta(Numero* num) = 0;
-    virtual Numero* mult(Numero* num) = 0;
-    virtual Numero* div(Numero* num) = 0;
+    virtual std::unique_ptr<Numero> suma(Numero* num) = 0; //uso unique_ptr para evitar perdidas de memoria
+    virtual std::unique_ptr<Numero> resta(Numero* num) = 0;
+    virtual std::unique_ptr<Numero> mult(Numero* num) = 0;
+    virtual std::unique_ptr<Numero> div(Numero* num) = 0;
     virtual std::string toString() = 0;
     virtual~Numero(){} // destructor virtual
 };
@@ -15,10 +16,10 @@ private:
     int valor;
 public:
     Entero(int valor);
-    Numero* suma(Numero* num) override;
-    Numero* resta(Numero* num) override;
-    Numero* mult(Numero* num) override;
-    Numero* div(Numero* num) override;
+    std::unique_ptr<Numero> suma(Numero* num) override;
+    std::unique_ptr<Numero> resta(Numero* num) override;
+    std::unique_ptr<Numero> mult(Numero* num) override;
+    std::unique_ptr<Numero> div(Numero* num) override;
     std::string toString() override;
 };
 
@@ -27,10 +28,10 @@ private:
     double valor;
 public:
     Real(double valor);
-    Numero* suma(Numero* num) override;
-    Numero* resta(Numero* num) override;
-    Numero* mult(Numero* num) override;
-    Numero* div(Numero* num) override;
+    std::unique_ptr<Numero> suma(Numero* num) override;
+    std::unique_ptr<Numero> resta(Numero* num) override;
+    std::unique_ptr<Numero> mult(Numero* num) override;
+    std::unique_ptr<Numero> div(Numero* num) override;
     std::string toString() override;
 };
 
@@ -39,9 +40,9 @@ private:
     double parteReal, parteImaginaria;
 public:
     Complejo(double parteReal, double parteImaginaria);
-    Numero* suma(Numero* num) override;
-    Numero* resta(Numero* num) override;
-    Numero* mult(Numero* num) override;
-    Numero* div(Numero* num) override;
+    std::unique_ptr<Numero> suma(Numero* num) override;
+    std::unique_ptr<Numero> resta(Numero* num) override;
+    std::unique_ptr<Numero> mult(Numero* num) override;
+    std::unique_ptr<Numero> div(Numero* num) override;
     std::string toString() override;
 };

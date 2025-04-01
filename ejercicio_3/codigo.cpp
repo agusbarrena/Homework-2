@@ -1,45 +1,46 @@
 #include <iostream>
 #include "funciones.h"
+#include <memory>
 Entero::Entero(int valor) : valor(valor) {}
 
-Numero* Entero::suma(Numero* num){
+std::unique_ptr<Numero> Entero::suma(Numero* num){
     Entero* e = dynamic_cast<Entero*>(num);
 
     if(e){
-        return new Entero(this->valor + e->valor);
+        return std::make_unique<Entero>(this->valor + e->valor);
     }
     std::cout<<"Fallo el cast de num en la suma de enteros.\n"<<std::endl;
     return nullptr;
     
 }
 
-Numero* Entero::resta(Numero* num){
+std::unique_ptr<Numero> Entero::resta(Numero* num){
     Entero* e = dynamic_cast<Entero*>(num);
 
     if(e){
-        return new Entero(this->valor - e->valor);
+        return std::make_unique<Entero>(this->valor - e->valor);
     }
     std::cout<<"Fallo el cast de num en la resta de enteros.\n"<<std::endl;
     return nullptr;
 
 }
 
-Numero* Entero::mult(Numero* num){
+std::unique_ptr<Numero> Entero::mult(Numero* num){
     Entero* e = dynamic_cast<Entero*>(num);
 
     if(e){
-        return new Entero(this->valor * e->valor);
+        return std::make_unique<Entero>(this->valor * e->valor);
     }else
     std::cout<<"Fallo el cast de num en la multiplicacion de enteros.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Entero::div(Numero* num){
+std::unique_ptr<Numero> Entero::div(Numero* num){
     Entero* e = dynamic_cast<Entero*>(num);
 
     if(e){
         if(e->valor != 0){
-            return new Entero(this->valor/e->valor);
+            return std::make_unique<Entero>(this->valor/e->valor);
         }else{
             throw std::runtime_error("Division sobre 0 no se puede.\n");
         }
@@ -54,44 +55,44 @@ std::string Entero::toString(){
 
 Real::Real(double valor) : valor(valor) {}
 
-Numero* Real::suma(Numero* num){
+std::unique_ptr<Numero> Real::suma(Numero* num){
     Real* r = dynamic_cast<Real*>(num);
 
     if(r){
-        return new Real(this->valor + r->valor);
+        return std::make_unique<Real>(this->valor + r->valor);
     }
     std::cout<<"Fallo el cast de num en la suma de reales.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Real::resta(Numero* num){
+std::unique_ptr<Numero> Real::resta(Numero* num){
     Real* r = dynamic_cast<Real*>(num);
 
     if(r){
-        return new Real(this->valor - r->valor);
+        return std::make_unique<Real>(this->valor - r->valor);
     }
     std::cout<<"Fallo el cast de num en la resta de reales.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Real::mult(Numero* num){
+std::unique_ptr<Numero> Real::mult(Numero* num){
     Real* r = dynamic_cast<Real*>(num);
 
     if(r){
-        return new Real(this->valor * r->valor);
+        return std::make_unique<Real>(this->valor * r->valor);
     }
     std::cout<<"Fallo el cast de num en la multiplicacion de reales.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Real::div(Numero* num){
+std::unique_ptr<Numero> Real::div(Numero* num){
     Real* r = dynamic_cast<Real*>(num);
 
     if(r){
         if(r->valor == 0.0){
             throw std::runtime_error("Error: Division sobre 0 en Reales\n");
         }
-        return new Real(this->valor/r->valor);
+        return std::make_unique<Real>(this->valor/r->valor);
     }
     std::cout<<"Fallo el cast de num en la division de reales.\n"<<std::endl;
     return nullptr;
@@ -103,37 +104,37 @@ std::string Real::toString(){
 
 Complejo::Complejo(double parteReal, double parteImaginaria) : parteReal(parteReal), parteImaginaria(parteImaginaria) {}
 
-Numero* Complejo::suma(Numero* num){
+std::unique_ptr<Numero> Complejo::suma(Numero* num){
     Complejo* c = dynamic_cast<Complejo*>(num);
     
     if(c){
-        return new Complejo(this->parteReal + c->parteReal, this->parteImaginaria + c->parteImaginaria);
+        return std::make_unique<Complejo>(this->parteReal + c->parteReal, this->parteImaginaria + c->parteImaginaria);
     }
     std::cout<<"Fallo el cast de num en la suma de complejos.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Complejo::resta(Numero* num){
+std::unique_ptr<Numero> Complejo::resta(Numero* num){
     Complejo* c = dynamic_cast<Complejo*>(num);
 
     if(c){
-        return new Complejo(this->parteReal - c->parteReal, this->parteImaginaria - c->parteImaginaria);
+        return std::make_unique<Complejo>(this->parteReal - c->parteReal, this->parteImaginaria - c->parteImaginaria);
     }
     std::cout<<"Fallo el cast de num en la resta de complejos.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Complejo::mult(Numero* num){
+std::unique_ptr<Numero> Complejo::mult(Numero* num){
     Complejo* c = dynamic_cast<Complejo*>(num);
 
     if(c){
-        return new Complejo(this->parteReal * c->parteReal - this->parteImaginaria * c->parteImaginaria, this->parteReal * c->parteImaginaria + this->parteImaginaria* c->parteReal );
+        return std::make_unique<Complejo>(this->parteReal * c->parteReal - this->parteImaginaria * c->parteImaginaria, this->parteReal * c->parteImaginaria + this->parteImaginaria* c->parteReal );
     }
     std::cout<<"Fallo el cast de num en la multiplicacion de complejos.\n"<<std::endl;
     return nullptr;
 }
 
-Numero* Complejo::div(Numero* num){
+std::unique_ptr<Numero> Complejo::div(Numero* num){
     Complejo* c = dynamic_cast<Complejo*>(num);
     if(c){
         double a = this->parteReal;
@@ -144,13 +145,13 @@ Numero* Complejo::div(Numero* num){
         double deno = d*d + e*e;
     
         if(deno == 0.0){
-            throw std::runtime_error("Division sobre 0 no es posible.");
+            throw std::runtime_error("Error: Division sobre 0 no es posible.");
         }
     
         double real = (a*d + e*b)/deno;
         double img = (b*d - e*a)/deno;
     
-        return new Complejo(real, img);
+        return std::make_unique<Complejo>(real, img);
     }
     std::cout<<"Fallo el cast de num en la division de complejos.\n"<<std::endl;
     return nullptr;
