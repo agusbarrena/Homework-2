@@ -115,22 +115,29 @@ void menu_1(Reloj& reloj){
     std::string momento;
 
     std::cout << "--- Elija una opción de Reloj para ingresar la hora ---" << std::endl;
-    std::cout << "1. Reloj solo con hora." << std::endl;
-    std::cout << "2. Reloj solo con hora y minutos." << std::endl;
-    std::cout << "3. Reloj con hora, minutos y segundos." << std::endl;
-    std::cout << "4. Reloj con hora, minutos, segundos con AM/PM." << std::endl;
+    std::cout << "1. Reloj por default." << std::endl;
+    std::cout << "2. Reloj solo con hora." << std::endl;
+    std::cout << "3. Reloj solo con hora y minutos." << std::endl;
+    std::cout << "4. Reloj con hora, minutos y segundos." << std::endl;
+    std::cout << "5. Reloj con hora, minutos, segundos con AM/PM." << std::endl;
+    
     
     std::cout << "Ingrese la opción: ";
     std::cin >> opcion;
     
     switch (opcion) {
-        case 1:
+        case 1: 
+            reloj = Reloj();
+            std::cout << "Hora: " << std::setw(2) << std::setfill('0') << reloj.getHora() << " hs" << std::endl; 
+            break;
+        
+        case 2:
             std::cout << "Ingrese la hora: ";
             std::cin >> horas;
             reloj.setHora(horas);
             break;
         
-        case 2:
+        case 3:
             std::cout << "Ingrese la hora: ";
             std::cin >> horas;
             reloj.setHora(horas);
@@ -139,7 +146,7 @@ void menu_1(Reloj& reloj){
             reloj.setMinutos(minutos);
             break;
         
-        case 3:
+        case 4:
             std::cout << "Ingrese la hora: ";
             std::cin >> horas;
             reloj.setHora(horas);
@@ -151,7 +158,7 @@ void menu_1(Reloj& reloj){
             reloj.setSegundos(segundos);
             break;
         
-        case 4:
+        case 5:
             std::cout << "Ingrese la hora: ";
             std::cin >> horas;
             reloj.setHora(horas);
@@ -231,24 +238,16 @@ void menu_2(Reloj& reloj){
                 break;
             }
             case 5: 
-                std::cout << "Hora: " 
-                          << std::setw(2) << std::setfill('0') << reloj.getHora() << " hs" 
-                          << std::endl;
+                std::cout << "Hora: " << std::setw(2) << std::setfill('0') << reloj.getHora() << " hs" << std::endl;
                 break;
             case 6: 
-                std::cout << "Minutos: " 
-                          << std::setw(2) << std::setfill('0') << reloj.getMinutos() << " min" 
-                          << std::endl;
+                std::cout << "Minutos: " << std::setw(2) << std::setfill('0') << reloj.getMinutos() << " min" << std::endl;
                 break;
             case 7: 
-                std::cout << "Segundos: " 
-                          << std::setw(2) << std::setfill('0') << reloj.getSegundos() << " seg" 
-                          << std::endl;
+                std::cout << "Segundos: " << std::setw(2) << std::setfill('0') << reloj.getSegundos() << " seg" << std::endl;
                 break;
             case 8: 
-                std::cout << "Momento: " 
-                          << (reloj.getMomento() == MOMENTO::AM ? "AM" : "PM") 
-                          << std::endl;
+                std::cout << "Momento: " << (reloj.getMomento() == MOMENTO::AM ? "AM" : "PM") << std::endl;
                 break;
             case 9: 
                 reloj.getFormato12(); 
