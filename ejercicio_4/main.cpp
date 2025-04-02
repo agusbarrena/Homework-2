@@ -6,19 +6,19 @@ int main(){
     CajaDeAhorro caja(10000, "Agustina");
     CuentaCorriente cuenta(7000, "Agustina", caja);
 
-    std::cout<<"Depositan $4000 en mi cuenta"<<std::endl;
+    std::cout<<"Depositan $4000 en mi cuenta:"<<std::endl;
     cuenta.depositar(4000);
     cuenta.mostrarInfo();
 
-    std::cout<<"\nRetiro $11000, mas de lo que tengo en mi caja de ahorro"<<std::endl;
+    std::cout<<"\nRetiro $11000, mas de lo que tengo en mi caja de ahorro:"<<std::endl;
     caja.retirar(11000);
     caja.mostrarInfo();
 
-    std::cout<<"\nRetiro $3000 desde mi cuenta corriente"<<std::endl;
+    std::cout<<"\nRetiro $3000 desde mi cuenta corriente:"<<std::endl;
     cuenta.retirar(3000);
     cuenta.mostrarInfo();
 
-    std::cout<<"\nRetiro $10000, mas dinero del que tengo en mi cuenta corriente"<<std::endl;
+    std::cout<<"\nRetiro $10000, mas dinero del que tengo en mi cuenta corriente:"<<std::endl;
     cuenta.retirar(10000);
     cuenta.mostrarInfo();
     caja.mostrarInfo();

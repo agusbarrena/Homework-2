@@ -35,4 +35,6 @@ private:
     CajaDeAhorro &caja;
 };
 
+//En la clase Banco (clase base), usamos protected en vez de private porque los miembros protected pueden ser accedidos dentro de Banco y dentro de CajaDeAhorro y CuentaCorriente (clases derivadas). Además permite que ambas subclases accedan a los datos y métodos de Banco sin la necesidad de hacerlos públicos. Notemos que CajaDeAhorro y CuentaCorriente sobrescriben métodos de la clase Banco.Por el otro lado, tanto en CajaDeAhorro como en CuentaCorriente usamos private porque los miembros private solo pueden ser accedidos dentro de la misma clase a la cual pertenecen. Por lo tanto, no permitimos que los datos dentro de estas clases derivadas puedan ser manipulados por otras subclases de manera directa.
+
 
