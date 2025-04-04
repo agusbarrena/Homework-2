@@ -154,21 +154,32 @@ void menu_interactivo() {
             case 2: {
                 std::cout << "Ingrese legajo del estudiante: ";
                 std::cin >> legajo;
+                
+                std::cout << "Cursos disponibles:\n";
                 for (auto& curso : cursos) {
-                    std::cout << curso->getNombreCurso() << "\n";
+                    std::cout << "- " << curso->getNombreCurso() << "\n";
                 }
-                std::cout << "Ingrese nombre del curso. Las opciones son las que aparecen arriba: ";
+                std::cout << "Ingrese nombre del curso: ";
                 std::cin >> nombreCurso;
                 
+                bool encontrado = false;
                 for (auto& curso : cursos) {
                     if (curso->getNombreCurso() == nombreCurso) {
                         for (auto& estudiante : estudiantes) {
                             if (estudiante->getLegajo() == legajo) {
-                                curso->inscribirEstudiante(estudiante);
+                                if (curso->inscribirEstudiante(estudiante)) {
+                                    std::cout << "Estudiante " << estudiante->getNombre() << " inscrito en " << curso->getNombreCurso() << ".\n";
+                                } else {
+                                    std::cout << "Error: El estudiante ya está inscrito en este curso o el curso está lleno.\n";
+                                }
+                                encontrado = true;
                                 break;
                             }
                         }
                     }
+                }
+                if (!encontrado) {
+                    std::cout << "Error: No se encontró el estudiante o el curso ingresado.\n";
                 }
                 break;
             }
@@ -179,19 +190,65 @@ void menu_interactivo() {
                 std::cin >> curso;
                 std::cout << "Ingrese nota: ";
                 std::cin >> nota;
-                for (auto& estudiante : estudiantes) {
-                    if (estudiante->getLegajo() == legajo) {
-                        estudiante->agregarCurso(curso, nota);
+            
+                Estudiante* estudiante = nullptr;
+                for (auto& est : estudiantes) {
+                    if (est->getLegajo() == legajo) {
+                        estudiante = est;
                         break;
                     }
                 }
+            
+                if (!estudiante) {
+                    std::cout << "Estudiante no encontrado.\n";
+                    break;
+                }
+
+                bool encontrado = false;
+                for (auto& c : cursos) {
+                    if (c->getNombreCurso() == curso) {
+                        if (c->estudianteInscripto(legajo)) {
+                            estudiante->agregarCurso(curso, nota);
+                            std::cout << "Nota agregada exitosamente.\n";
+                        } else {
+                            std::cout << "El estudiante no está inscripto en ese curso.\n";
+                        }
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) {
+                    std::cout << "El curso ingresado no existe.\n";
+                }
                 break;
             }
+            
+            
             case 4: {
                 std::cout << "Ingrese legajo del estudiante a desinscribir: ";
                 std::cin >> legajo;
+                
+                std::cout << "Cursos disponibles:\n";
                 for (auto& curso : cursos) {
-                    curso->desinscribirEstudiante(legajo);
+                    std::cout << "- " << curso->getNombreCurso() << "\n";
+                }
+                std::cout << "Ingrese nombre del curso: ";
+                std::cin >> nombreCurso;
+            
+                bool encontrado = false;
+                for (auto& curso : cursos) {
+                    if (curso->getNombreCurso() == nombreCurso) {
+                        if (curso->desinscribirEstudiante(legajo)) {
+                            std::cout << "Estudiante con legajo " << legajo << " ha sido desinscrito de " << curso->getNombreCurso() << ".\n";
+                        } else {
+                            std::cout << "Error: El estudiante no estaba inscrito en este curso.\n";
+                        }
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) {
+                    std::cout << "Error: Curso no encontrado.\n";
                 }
                 break;
             }
@@ -214,8 +271,24 @@ void menu_interactivo() {
                 break;
             }
             case 7: {
-                for (auto& curso : cursos) {
-                    curso->estudiantesOrdenados();
+                std::cout << "Cursos disponibles:\n";
+                for (auto& c : cursos) {
+                    std::cout << "- " << c->getNombreCurso() << "\n";
+                }
+            
+                std::cout << "Ingrese el nombre del curso a imprimir: ";
+                std::cin >> cursoNombre;
+            
+                bool encontrado = false;
+                for (auto& c : cursos) {
+                    if (c->getNombreCurso() == cursoNombre) {
+                        c->estudiantesOrdenados();
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) {
+                    std::cout << "Curso no encontrado.\n";
                 }
                 break;
             }
@@ -254,6 +327,5 @@ void menu_interactivo() {
         delete curso;
     }
 }
-
 
 
